@@ -1,1 +1,125 @@
-/* @import "tailwindcss"; */
+.about-page {
+  min-height: 100vh;
+}
+
+/* Mission Section */
+.mission-section {
+  padding: 48px 16px;
+}
+
+.mission-container {
+  max-width: 1024px;
+  margin: 0 auto;
+}
+
+/* Image */
+.about-image-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+.about-image {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  display: block;
+}
+
+/* Mission Content */
+.mission-content {
+  text-align: center;
+}
+
+.mission-title {
+  font-size: 48px !important;
+  font-weight: 700 !important;
+  margin-bottom: 24px !important;
+}
+
+.mission-highlight {
+  color: #e34934;
+  margin-left: 4px;
+}
+
+.mission-description {
+  max-width: 768px;
+  margin: 0 auto !important;
+  font-size: 20px;
+  line-height: 1.7;
+  opacity: 0.9;
+}
+
+/* CTA Section */
+.cta-section {
+  padding: 80px 16px;
+  background-color: #f5f5f5;
+}
+
+.cta-container {
+  max-width: 768px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.cta-title {
+  font-size: 48px !important;
+  font-weight: 700 !important;
+  margin-bottom: 24px !important;
+}
+
+.cta-description {
+  font-size: 20px;
+  opacity: 0.8;
+  margin-bottom: 0 !important;
+}
+
+.cta-button-wrapper {
+  padding-top: 16px;
+}
+
+.cta-button-wrapper .ant-btn {
+  height: 48px;
+  padding: 0 32px;
+  font-size: 16px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .mission-section {
+    padding: 48px 16px;
+  }
+
+  .mission-title {
+    font-size: 36px !important;
+  }
+
+  .mission-description {
+    font-size: 18px;
+  }
+
+  .cta-section {
+    padding: 64px 16px;
+  }
+
+  .cta-title {
+    font-size: 36px !important;
+  }
+
+  .cta-description {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .mission-title,
+  .cta-title {
+    font-size: 30px !important;
+  }
+
+  .mission-description,
+  .cta-description {
+    font-size: 16px;
+  }
+}

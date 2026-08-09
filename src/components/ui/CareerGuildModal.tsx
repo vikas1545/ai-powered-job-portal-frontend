@@ -7,7 +7,7 @@ import {
   FolderOutlined,
   RiseOutlined,
 } from "@ant-design/icons";
-import type { JobOptions, LearningApproach } from "../types";
+import type { JobOptions } from "../types";
 
 const { Title, Text, Paragraph } = Typography;
 

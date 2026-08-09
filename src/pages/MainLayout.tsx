@@ -2,35 +2,38 @@
 import { Breadcrumb, Button, Divider, Flex, Image, Layout, Menu, Popover, theme, Typography } from 'antd';
 import IMAGE_LIST from '../components/images';
 import { LoginOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 const { Header, Content, Footer } = Layout;
 const { Text, Title } = Typography
 
 const isAuth = true;
 
+
+
+const MainLayout = () => {
+    const {
+        token: { colorBgContainer, borderRadiusLG },
+    } = theme.useToken();
+    const navigate = useNavigate();
+
+    const currentYear = new Date().getFullYear();
 const items = [
     {
         key: 'Home',
         label: 'Home',
+          onClick: () => navigate("/"),
     },
     {
         key: 'Jobs',
         label: 'Jobs',
     },
     {
-        key: 'About',
-        label: 'About',
-    }
+  key: "About",
+  label: "About",
+  onClick: () => navigate("/about"),
+}
 ]
-
-const MainLayout = () => {
-    const {
-        token: { colorBgContainer, borderRadiusLG },
-    } = theme.useToken();
-
-    const currentYear = new Date().getFullYear();
-
     const content = (
         <Flex vertical gap={4} align='baseline' justify='stretch'>
             <Flex vertical gap={2}>
@@ -45,7 +48,7 @@ const MainLayout = () => {
 
     return (
         <Layout>
-            <Header style={{ display: 'flex', justifyContent: 'space-between',position:'fixed',width:'100%',zIndex:10 }}>
+            <Header style={{ display: 'flex', justifyContent: 'space-between', position: 'fixed', width: '100%', zIndex: 10 }}>
                 <Image src={IMAGE_LIST.HireFastLogo} preview={false} style={{ backgroundColor: 'white' }} />
                 <Menu
                     theme="dark"
@@ -63,7 +66,7 @@ const MainLayout = () => {
             <Content>
                 <Breadcrumb
                     style={{ margin: '16px 0' }}
-                    // items={[{ title: 'Home' }, { title: 'List' }, { title: 'App' }]}
+                // items={[{ title: 'Home' }, { title: 'List' }, { title: 'App' }]}
                 />
                 <div
                     style={{
@@ -73,7 +76,7 @@ const MainLayout = () => {
                         borderRadius: borderRadiusLG,
                     }}
                 >
-                    <Outlet/>
+                    <Outlet />
                 </div>
             </Content>
             <Footer style={{ textAlign: 'center' }}>HireFast ©{currentYear} Created by vikas</Footer>
