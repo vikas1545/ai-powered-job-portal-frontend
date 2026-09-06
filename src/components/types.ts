@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+import type React from "react";
 
 
 export interface JobOptions {
@@ -49,4 +51,35 @@ export interface ResumeAnalysisResponse {
     suggestions: Suggestion[];
     strengths: string[];
     summary: string
+}
+
+export interface User {
+    user_id: number;
+    name: string;
+    email: string;
+    phone_number: string;
+    role: "jobseeker" | "recruiter";
+    bio: string | null;
+    resume: string | null;
+    resume_public_id: string | null;
+    profile_pic: string | null;
+    profile_pic_public_id: string | null;
+    skills: string[];
+    subscription: string | null;
+}
+
+export interface AppContextType {
+    user: User | null;
+    loading: boolean;
+    btnLoading: boolean;
+    isAuth: boolean;
+    setUser: React.Dispatch<React.SetStateAction<User | null>>;
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    setBtnLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    setIsAuth: React.Dispatch<React.SetStateAction<boolean>>;
+    logOut: () => Promise<void>
+}
+
+export interface AppProviderProps {
+    children: ReactNode;
 }

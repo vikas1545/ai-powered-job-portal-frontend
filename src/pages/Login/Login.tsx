@@ -1,71 +1,188 @@
-import { Button, Flex, Form, Input, Layout, notification } from 'antd';
-import { ArrowRightOutlined, MailOutlined } from '@ant-design/icons';
+import { Button, Flex, Form, Input, Layout, notification, Card, Typography, Image, Divider, Space } from 'antd';
+
+import {
+  MailOutlined,
+  ArrowRightOutlined,
+  LockOutlined,
+} from "@ant-design/icons";
+
+const { Title, Text } = Typography;
+
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-//import { useAppData } from '../../context/AppContext';
-import Loading from '../../components/Loading';
+import Cookies from 'js-cookie';
+import { useAppData } from '../../context/AppContext';
+import IMAGE_LIST from '../../components/images';
 const { Content } = Layout;
-const user_service = import.meta.env.VITE_USER_BASE_URL;
+const auth_service = import.meta.env.VITE_AUTH_SERVICE;
 
 export default function Login() {
 
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  //const { isAuth, loading: userLoading } = useAppData();
+  const { isAuth, setIsAuth, setUser } = useAppData();
   const navigate = useNavigate();
 
   const onFinish = async (values: any) => {
 
     try {
       setLoading(true);
-      const res = await axios.post(`${user_service}/login`, values);
-      notification.success({message:res?.data?.message || 'OTP has been sent successfully',placement:'top'})
-      navigate(`/verify?email=${values.email}`);
-    } catch (error:any) {
-       notification.error({message:error?.response?.data?.message||'Failed to send OTP'})
+      const { data } = await axios.post(`${auth_service}/api/auth/login`, values);
+      notification.success({ message: data?.message || 'LoggedIn Successfully', placement: 'top' })
+      Cookies.set('token', data.token, {
+        expires: 15,
+        secure: true,
+        path: '/'
+      })
+      setUser(data.userObject);
+      setIsAuth(true)
+      navigate('/');
+    } catch (error: any) {
+      notification.error({ message: error?.response?.data?.message || 'Failed to log in' })
+      setIsAuth(false);
+
     } finally {
       setLoading(false);
     }
   }
 
-  // if (isAuth) {
-  //   navigate('/chat');
-  // }
 
   // if (userLoading) {
   //   return <Loading />
   // }
 
   return (<Layout> <Content>
-    <Flex justify='center' align='center' className="min-h-screen p-4 bg-gray-900">
+    <Flex
+      justify="center"
+      align="center"
+      style={{
+        width: "100%",
+        background: "#111827",
+        padding: 24,
+        marginTop: '4%'
+      }}
+    >
+      <Card
+        style={{
+          width: "100%",
+          maxWidth: 448,
+          background: "#1f2937",
+          border: "1px solid #374151",
+          borderRadius: 8,
+          padding: 16,
+        }}
+        styles={{
+          body: {
+            padding: 0,
+          },
+        }}
+      >
+        <Flex
+          vertical
+          align="center"
+          style={{
+            marginBottom: 16,
+            textAlign: "center",
+          }}
+        >
+          {/* Icon */}
+          <Flex
+            justify="center"
+            align="center"
+            style={{
+              marginBottom: 16,
+            }}
+          >
+            <Image src={IMAGE_LIST.HireFastLogo} preview={false} style={{ backgroundColor: 'white' }} />
+          </Flex>
 
-      <div className='max-w-md w-full'>
-        <div className='bg-gray-800 border border-gray-700 rounded-lg p-8'>
-          <div className='text-center mb-8'>
+          <Title
+            level={1}
+            style={{
+              color: "#fff",
+              margin: "0 0 12px",
+              fontSize: 36,
+            }}
+          >
+            Welcome to HireFast
+          </Title>
 
-            <div className='flex items-center justify-center mx-auto w-20 h-20 bg-blue-600 rounded-lg mb-6'>
-              <MailOutlined style={{ fontSize: 40, color: 'white' }} className='text-center' />
-            </div>
-            <h1 className='text-4xl font-bold text-white mb-3'>Welcome to chatApp</h1>
-            <p className='text-gray-300 text-lg'>Enter your email to continue your journey</p>
-          </div>
-          <Form form={form} layout="vertical" autoComplete="off" onFinish={onFinish}>
-            <Form.Item name="email" label="Email Address" rules={[{ required: true, message: "Email is required" }]} >
-              <Input placeholder='Enter Your Email' size='large' />
-            </Form.Item>
+          <Text
+            style={{
+              color: "#d1d5db",
+              fontSize: 18,
+            }}
+          >
+            Login to continue your journey
+          </Text>
+        </Flex>
 
-            <Form.Item>
+        <Form
+          form={form}
+          layout="vertical"
+          autoComplete="off"
+          onFinish={onFinish}
+        >
+          <Form.Item
+            name="email"
+            label={
+              <span style={{ color: "#fff" }}>
+                Email Address
+              </span>
+            }
+            rules={[
+              {
+                required: true,
+                message: "Email is required",
+              },
+              {
+                type: "email",
+                message: "Please enter a valid email",
+              },
+            ]}
+          >
+            <Input
+              placeholder="Enter Your Email"
+              size="large"
+              prefix={<MailOutlined />}
+            />
+          </Form.Item>
 
-              <Button htmlType='submit' type='primary' block className='btn-submit mt-2' loading={loading} >
-                {loading ? "Sending otp to your email" : "Send verification code"} <ArrowRightOutlined />
-              </Button>
+          <Form.Item
+            name="password"
+            label={
+              <span style={{ color: "#fff" }}>
+                Password
+              </span>
+            }
+            rules={[{ required: true, message: 'Password is required' }]}
+          >
+            <Input prefix={<LockOutlined />} type="password" placeholder="Password" size='large' />
+          </Form.Item>
 
+          <Form.Item style={{ marginBottom: 0 }}>
+            <Button
+              htmlType="submit"
+              type="primary"
+              block
+              size="large"
+              loading={loading}
+              style={{ marginTop: 8 }}
+              icon={!loading ? <ArrowRightOutlined /> : null}
+            >
+              {loading
+                ? "Signing In..."
+                : "Sign In"}
+            </Button>
+          </Form.Item>
+        </Form>
 
-            </Form.Item>
-          </Form>
-        </div>
-      </div>
+        <Flex justify='center' align='center' gap={4} style={{ padding: 8 ,fontSize:16}} wrap>
+          <Text style={{ color: 'white' }}>Don't have an account ? </Text>
+          <Link to='/register'>Create an account</Link>
+          </Flex>
+      </Card>
     </Flex>
   </Content>
   </Layout>
