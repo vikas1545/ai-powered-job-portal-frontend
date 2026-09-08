@@ -23,8 +23,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     const [btnLoading, setBtnLoading] = useState<boolean>(true);
     const [isAuth, setIsAuth] = useState<boolean>(false);
 
-    //const token = Cookies.get('token');
-
+    const token = Cookies.get('token');
 
     const logOut = async () => {
         Cookies.remove('token');
@@ -33,11 +32,37 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         notification.success({ message: 'Logged Out successfully' });
     }
 
+    const updateProfilePic = async (formData: any) => {
+        try {
+            setLoading(true);
+            const { data } = await axios.put(`${user_service}/api/user/update/pic`, formData, { headers: { Authorization: `Bearer ${token}` } });
+
+            notification.success({message:'Profile pic updated'})
+            fetchUser()
+        } catch (error: any) {
+            notification.error({ message: error?.response?.data?.message || 'Failed to update profile pic' });
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const updateResume = async (formData: any) => {
+        try {
+            setLoading(true);
+            const { data } = await axios.put(`${user_service}/api/user/update/pic`, formData, { headers: { Authorization: `Bearer ${token}` } });
+
+            notification.success({message:'Profile pic updated'})
+            fetchUser()
+        } catch (error: any) {
+            notification.error({ message: error?.response?.data?.message || 'Failed to update profile pic' });
+        } finally {
+            setLoading(false);
+        }
+    }
 
     const fetchUser = async () => {
         try {
             setLoading(true);
-            const token = Cookies.get('token');
             const { data } = await axios.get(`${user_service}/api/user/me`, { headers: { Authorization: `Bearer ${token}` } });
             setUser(data);
             setIsAuth(true);
@@ -52,11 +77,11 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         fetchUser();
     }, []);
 
-    if (loading) {
-        return <Loading />
-    }
+    // if (loading) {
+    //     return <Loading />
+    // }
 
-    return <AppContext.Provider value={{ user, setUser, loading, setLoading, isAuth, setIsAuth, btnLoading, setBtnLoading, logOut }}>
+    return <AppContext.Provider value={{ user, setUser, loading, setLoading, isAuth, setIsAuth, btnLoading, setBtnLoading, logOut,updateProfilePic }}>
         {children}
     </AppContext.Provider>
 }
