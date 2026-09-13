@@ -1,9 +1,14 @@
 import React, { useState } from "react";
-import { Card, Avatar, Typography, Row, Col, Upload, Button, Space, Empty, message } from "antd";
+import { Card, Avatar, Typography, Row, Col, Upload, Button, Space, Empty, message, Flex } from "antd";
 import type { UploadFile, UploadProps } from "antd";
 import type { AccountProps } from "../../components/types";
 import { useAppData } from "../../context/AppContext";
-import { CameraOutlined, DownloadOutlined, EyeOutlined, FileTextOutlined, IdcardOutlined, MailOutlined, PhoneOutlined, UploadOutlined } from "@ant-design/icons";
+import {
+  CameraOutlined, DownloadOutlined, EditOutlined, EyeOutlined, FileTextOutlined,
+  IdcardOutlined, MailOutlined, PhoneOutlined, UploadOutlined
+} from "@ant-design/icons";
+import EditModal from "./EditModal";
+import UpdateResume from "./UpdateResume";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -43,24 +48,22 @@ const Info: React.FC<AccountProps> = ({ user, isYourAccount }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [bio, setBio] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const { updateProfilePic } = useAppData()
 
   const handleChange: UploadProps['onChange'] = async ({ fileList: newFileList }) => {
-     
+
     const formData = new FormData()
 
     const resumeFile = newFileList?.[0]?.originFileObj;
-    if(resumeFile)
-     formData.append("file", resumeFile,resumeFile?.name);
+    if (resumeFile)
+      formData.append("file", resumeFile, resumeFile?.name);
     await updateProfilePic(formData)
     setFileList(newFileList);
   };
 
   const imageUrl = fileList[0]?.originFileObj ? URL.createObjectURL(fileList[0].originFileObj) : undefined;
-
-
-
 
   const handleResumeSelect: UploadProps["beforeUpload"] = (file) => {
     setResumeFileName(file.name);
@@ -107,9 +110,10 @@ const Info: React.FC<AccountProps> = ({ user, isYourAccount }) => {
           overflow: "hidden",
           borderColor,
         }}
-        bodyStyle={{ padding: 0, background: cardBg }}
+
+        styles={{ body: { padding: 0, background: cardBg } }}
       >
-        {/* Cover photo */}
+
         <div
           style={{
             height: 120,
@@ -125,7 +129,7 @@ const Info: React.FC<AccountProps> = ({ user, isYourAccount }) => {
           <div style={{ position: "relative", width: 112, marginTop: -56 }}>
             <Avatar
               size={112}
-              src={imageUrl?imageUrl:user?.profile_pic}
+              src={imageUrl ? imageUrl : user?.profile_pic}
               style={{
                 border: `4px solid ${cardBg}`,
                 background: "#606a80",
@@ -153,11 +157,14 @@ const Info: React.FC<AccountProps> = ({ user, isYourAccount }) => {
 
           {/* Name + role */}
           <div style={{ marginTop: 16, marginBottom: 24 }}>
-            <Title level={2} style={{ margin: 0, color: textColor }}>
-              {user.name}
-            </Title>
+            <Flex justify="space-between" gap={8} align="center">
+              <Title level={2} style={{ margin: 0, color: textColor }}>
+                {user.name}
+              </Title>
+              <Button icon={<EditOutlined />} onClick={() => setIsEditModalOpen(true)} />
+            </Flex>
             <Space size={6} style={{ marginTop: 4 }}>
-              <IdcardOutlined size={15} color={textColor}/>
+              <IdcardOutlined size={15} color={textColor} />
               <Text style={{ color: subText }}>{user.role}</Text>
             </Space>
           </div>
@@ -192,7 +199,7 @@ const Info: React.FC<AccountProps> = ({ user, isYourAccount }) => {
               <Card size="small" style={{ borderRadius: 12, borderColor }} bodyStyle={{ background: cardBg }}>
                 <Space align="center" size={12}>
                   <IconBubble color={brandBlue}>
-                    <MailOutlined  color={brandBlue} />
+                    <MailOutlined color={brandBlue} />
                   </IconBubble>
                   <div>
                     <div style={{ color: subText, fontSize: 12 }}>Email</div>
@@ -205,7 +212,7 @@ const Info: React.FC<AccountProps> = ({ user, isYourAccount }) => {
               <Card size="small" style={{ borderRadius: 12, borderColor }} bodyStyle={{ background: cardBg }}>
                 <Space align="center" size={12}>
                   <IconBubble color={brandBlue}>
-                    <PhoneOutlined color={brandBlue} rotate={90}/>
+                    <PhoneOutlined color={brandBlue} rotate={90} />
                   </IconBubble>
                   <div>
                     <div style={{ color: subText, fontSize: 12 }}>Phone</div>
@@ -226,7 +233,7 @@ const Info: React.FC<AccountProps> = ({ user, isYourAccount }) => {
             </Space>
 
               <Card size="small" style={{ borderRadius: 12, borderColor }} bodyStyle={{ background: cardBg }}>
-                {resumeFileName ? (
+                {/* {resumeFileName ? (
                   <Space align="center" style={{ width: "100%", justifyContent: "space-between" }}>
                     <Space size={12}>
                       <IconBubble color={brandBlue}>
@@ -243,19 +250,22 @@ const Info: React.FC<AccountProps> = ({ user, isYourAccount }) => {
                       </Button>
                     </Space>
                   </Space>
-                ) : isYourAccount === true ? (
+                ) : isYourAccount !== true ? (
                   <Upload accept=".pdf,.doc,.docx" showUploadList={false} beforeUpload={handleResumeSelect}>
                     <Button icon={<UploadOutlined size={14} />}>Upload resume</Button>
                   </Upload>
                 ) : (
                   <Text style={{ color: subText }}>No resume uploaded yet.</Text>
-                )}
+                )} */}
+                <UpdateResume user={user} />
               </Card>
 
             </>
           }
         </div>
       </Card>
+
+      {isEditModalOpen && <EditModal isEditModalOpen={isEditModalOpen} setIsEditModalOpen={setIsEditModalOpen} user={user} />}
     </div>
   );
 };

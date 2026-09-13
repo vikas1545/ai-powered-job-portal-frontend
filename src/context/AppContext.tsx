@@ -4,16 +4,8 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import { notification } from "antd";
 import type { AppContextType, AppProviderProps, User } from "../components/types";
-import Loading from "../components/Loading";
+
 const user_service = import.meta.env.VITE_USER_SERVICE;
-
-
-
-
-
-
-
-
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
@@ -37,7 +29,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
             setLoading(true);
             const { data } = await axios.put(`${user_service}/api/user/update/pic`, formData, { headers: { Authorization: `Bearer ${token}` } });
 
-            notification.success({message:'Profile pic updated'})
+            notification.success({ message: 'Profile pic updated' })
             fetchUser()
         } catch (error: any) {
             notification.error({ message: error?.response?.data?.message || 'Failed to update profile pic' });
@@ -46,15 +38,28 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         }
     }
 
-    const updateResume = async (formData: any) => {
+    const resumeUpdate = async (formData: any) => {
         try {
             setLoading(true);
-            const { data } = await axios.put(`${user_service}/api/user/update/pic`, formData, { headers: { Authorization: `Bearer ${token}` } });
+            const { data } = await axios.put(`${user_service}/api/user/update/resume`, formData, { headers: { Authorization: `Bearer ${token}` } });
 
-            notification.success({message:'Profile pic updated'})
+            notification.success({ message: 'resume updated' })
             fetchUser()
         } catch (error: any) {
-            notification.error({ message: error?.response?.data?.message || 'Failed to update profile pic' });
+            notification.error({ message: error?.response?.data?.message || 'Failed to update resume' });
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const resumeDelete = async (resume:string, publicId:string) => {
+        try {
+            setLoading(true);
+            const { data } = await axios.put(`${user_service}/api/user/delete/resume/${publicId}`,
+                { resume }, { headers: { Authorization: `Bearer ${token}` } });
+            fetchUser()
+        } catch (error: any) {
+            notification.error({ message: error?.response?.data?.message || 'Failed to remove resume' });
         } finally {
             setLoading(false);
         }
@@ -77,11 +82,11 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         fetchUser();
     }, []);
 
-    // if (loading) {
-    //     return <Loading />
-    // }
 
-    return <AppContext.Provider value={{ user, setUser, loading, setLoading, isAuth, setIsAuth, btnLoading, setBtnLoading, logOut,updateProfilePic }}>
+    return <AppContext.Provider value={{
+        user, setUser, loading, setLoading, isAuth, setIsAuth, btnLoading, setBtnLoading, logOut, updateProfilePic,
+        resumeUpdate, resumeDelete
+    }}>
         {children}
     </AppContext.Provider>
 }

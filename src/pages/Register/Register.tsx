@@ -5,6 +5,7 @@ import {
     ArrowRightOutlined,
     LockOutlined,
     UploadOutlined,
+    PhoneOutlined,
 } from "@ant-design/icons";
 
 const { Title, Text } = Typography;
@@ -247,7 +248,7 @@ export default function Register() {
                             }
                             rules={[{ required: true, message: 'Phone is required' }]}
                         >
-                            <Input prefix={<LockOutlined />} placeholder="Enter Your  Phone No." size='large' />
+                            <Input prefix={<PhoneOutlined />} placeholder="Enter Your  Phone No." size='large' />
                         </Form.Item>
 
                         <Form.Item

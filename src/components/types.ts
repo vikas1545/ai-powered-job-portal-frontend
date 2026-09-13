@@ -77,8 +77,10 @@ export interface AppContextType {
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
     setBtnLoading: React.Dispatch<React.SetStateAction<boolean>>;
     setIsAuth: React.Dispatch<React.SetStateAction<boolean>>;
-    logOut: () => Promise<void>
-    updateProfilePic: (formData:any) => Promise<void>
+    logOut: () => Promise<void>;
+    updateProfilePic: (formData: any) => Promise<void>;
+    resumeUpdate: (formData: any) => Promise<void>
+    resumeDelete: (resume: string, publicId: string) => Promise<void>
 }
 
 export interface AppProviderProps {
