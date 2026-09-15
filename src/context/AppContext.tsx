@@ -1,5 +1,5 @@
 import type React from "react";
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { notification } from "antd";
@@ -12,7 +12,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
-    const [btnLoading, setBtnLoading] = useState<boolean>(true);
+    const [btnLoading, setBtnLoading] = useState<boolean>(false);
     const [isAuth, setIsAuth] = useState<boolean>(false);
 
     const token = Cookies.get('token');
@@ -52,7 +52,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         }
     }
 
-    const resumeDelete = async (resume:string, publicId:string) => {
+    const resumeDelete = async (resume: string, publicId: string) => {
         try {
             setLoading(true);
             const { data } = await axios.put(`${user_service}/api/user/delete/resume/${publicId}`,
@@ -64,6 +64,40 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
             setLoading(false);
         }
     }
+
+    const addSkills = async (skill: string) => {
+        try {
+            setBtnLoading(true);
+            const { data } = await axios.post(`${user_service}/api/user/skill/add`, { skillName: skill }, { headers: { Authorization: `Bearer ${token}` } });
+            notification.success({ message: data.message || 'Skills added' })
+            await fetchUser()
+        } catch (error: any) {
+            notification.error({ message: error?.response?.data?.message || 'Failed to add skills' });
+        } finally {
+            setBtnLoading(false);
+        }
+    }
+
+    const deleteSkill = async (skill: string) => {
+        try {
+            setBtnLoading(true);
+
+            await axios.delete(`${user_service}/api/user/skill/delete`, {
+                data: { skillName: skill },
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            fetchUser();
+        } catch (error: any) {
+            notification.error({
+                message: error?.response?.data?.message || 'Failed to remove skill',
+            });
+        } finally {
+            setBtnLoading(false);
+        }
+    };
 
     const fetchUser = async () => {
         try {
@@ -78,6 +112,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         }
     }
 
+
     useEffect(() => {
         fetchUser();
     }, []);
@@ -85,7 +120,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
     return <AppContext.Provider value={{
         user, setUser, loading, setLoading, isAuth, setIsAuth, btnLoading, setBtnLoading, logOut, updateProfilePic,
-        resumeUpdate, resumeDelete
+        resumeUpdate, resumeDelete, addSkills,deleteSkill
     }}>
         {children}
     </AppContext.Provider>

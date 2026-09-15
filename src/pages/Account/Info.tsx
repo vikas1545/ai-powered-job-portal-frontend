@@ -4,8 +4,8 @@ import type { UploadFile, UploadProps } from "antd";
 import type { AccountProps } from "../../components/types";
 import { useAppData } from "../../context/AppContext";
 import {
-  CameraOutlined, DownloadOutlined, EditOutlined, EyeOutlined, FileTextOutlined,
-  IdcardOutlined, MailOutlined, PhoneOutlined, UploadOutlined
+  CameraOutlined, EditOutlined, FileTextOutlined,
+  IdcardOutlined, MailOutlined, PhoneOutlined,
 } from "@ant-design/icons";
 import EditModal from "./EditModal";
 import UpdateResume from "./UpdateResume";
@@ -42,12 +42,7 @@ const brandBlue = "#2f6fed";
 
 const Info: React.FC<AccountProps> = ({ user, isYourAccount }) => {
 
-  const [resumeFileName, setResumeFileName] = useState<string | undefined>();
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const [name, setName] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [bio, setBio] = useState('');
-  const [loading, setLoading] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const { updateProfilePic } = useAppData()
@@ -64,11 +59,6 @@ const Info: React.FC<AccountProps> = ({ user, isYourAccount }) => {
   };
 
   const imageUrl = fileList[0]?.originFileObj ? URL.createObjectURL(fileList[0].originFileObj) : undefined;
-
-  const handleResumeSelect: UploadProps["beforeUpload"] = (file) => {
-    setResumeFileName(file.name);
-    return false;
-  };
 
 
 
@@ -106,12 +96,12 @@ const Info: React.FC<AccountProps> = ({ user, isYourAccount }) => {
         style={{
           width: "100%",
           maxWidth: 720,
-          borderRadius: 16,
+          // borderRadius: 16,
           overflow: "hidden",
           borderColor,
         }}
 
-        styles={{ body: { padding: 0, background: cardBg } }}
+        styles={{ body: { padding: 0 } }}
       >
 
         <div
@@ -161,7 +151,7 @@ const Info: React.FC<AccountProps> = ({ user, isYourAccount }) => {
               <Title level={2} style={{ margin: 0, color: textColor }}>
                 {user.name}
               </Title>
-              <Button icon={<EditOutlined />} onClick={() => setIsEditModalOpen(true)} />
+             {isYourAccount && <Button icon={<EditOutlined />} onClick={() => setIsEditModalOpen(true)} />}
             </Flex>
             <Space size={6} style={{ marginTop: 4 }}>
               <IdcardOutlined size={15} color={textColor} />
@@ -233,31 +223,7 @@ const Info: React.FC<AccountProps> = ({ user, isYourAccount }) => {
             </Space>
 
               <Card size="small" style={{ borderRadius: 12, borderColor }} bodyStyle={{ background: cardBg }}>
-                {/* {resumeFileName ? (
-                  <Space align="center" style={{ width: "100%", justifyContent: "space-between" }}>
-                    <Space size={12}>
-                      <IconBubble color={brandBlue}>
-                        <FileTextOutlined size={16} color={brandBlue} />
-                      </IconBubble>
-                      <Text style={{ color: textColor, fontWeight: 500 }}>{resumeFileName}</Text>
-                    </Space>
-                    <Space size={8}>
-                      <Button size="small" icon={<EyeOutlined size={14} />}>
-                        View
-                      </Button>
-                      <Button size="small" icon={<DownloadOutlined size={14} />}>
-                        Download
-                      </Button>
-                    </Space>
-                  </Space>
-                ) : isYourAccount !== true ? (
-                  <Upload accept=".pdf,.doc,.docx" showUploadList={false} beforeUpload={handleResumeSelect}>
-                    <Button icon={<UploadOutlined size={14} />}>Upload resume</Button>
-                  </Upload>
-                ) : (
-                  <Text style={{ color: subText }}>No resume uploaded yet.</Text>
-                )} */}
-                <UpdateResume user={user} />
+                <UpdateResume user={user} canUpdateResume={isYourAccount?true:false}/>
               </Card>
 
             </>

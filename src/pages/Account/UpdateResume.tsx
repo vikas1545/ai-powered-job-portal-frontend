@@ -1,29 +1,34 @@
 import { UploadOutlined } from "@ant-design/icons";
 import {
     Button,
+    Flex,
     message,
-    notification,
+    Typography,
     Upload,
     type UploadFile,
     type UploadProps,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import type { User } from "../../components/types";
-import axios from "axios";
 import { useAppData } from "../../context/AppContext";
 
-const auth_service = import.meta.env.VITE_AUTH_SERVICE;
+const subText = "#8c8c8c";
+
+const { Title } = Typography;
+
 interface UpdateResumeProps {
     user: User;
+    canUpdateResume: Boolean
 }
 
 const UpdateResume: React.FC<UpdateResumeProps> = ({
     user,
+    canUpdateResume
 }) => {
 
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [loading, setLoading] = useState(false);
-    const { resumeUpdate,resumeDelete } = useAppData()
+    const { resumeUpdate, resumeDelete } = useAppData()
 
     useEffect(() => {
         if (user.resume) {
@@ -86,26 +91,32 @@ const UpdateResume: React.FC<UpdateResumeProps> = ({
         },
 
         onRemove: () => {
-            if(user.resume && user.resume_public_id)
-            resumeDelete(user.resume,user.resume_public_id)
+            if (user.resume && user.resume_public_id)
+                resumeDelete(user.resume, user.resume_public_id)
             setFileList([]);
-            // onResumeChange?.(null);
         },
     };
 
     return (
-        <Upload
+      <>  <Upload
             {...uploadProps}
             listType="picture"
             style={{ backgroundColor: "white" }}
+            showUploadList={{
+                showRemoveIcon: canUpdateResume ? true : false,
+            }}
         >
-            <Button
+            {canUpdateResume && <Button
                 icon={<UploadOutlined />}
                 style={{ margin: 4 }}
             >
-                Replace Resume
-            </Button>
+                Upload
+            </Button>}
         </Upload>
+
+        {fileList.length === 0 && <Flex justify="center"><Title level={5} style={{ color: subText,marginTop:'5px' }}>No Resume Attached Yet !</Title></Flex>}
+
+        </>
     );
 };
 

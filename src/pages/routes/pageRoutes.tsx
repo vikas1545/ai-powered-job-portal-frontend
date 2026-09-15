@@ -17,6 +17,7 @@ function PageRoutes() {
                     <Route path='/' element={<Home />} />
                     <Route path='/about' element={<About />} />
                     <Route path='/account' element={<Account />} />
+                    <Route path='/account/:id' element={<Account />} />
                 </Route>
             </Routes>
         </BrowserRouter>

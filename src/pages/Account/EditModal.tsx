@@ -164,7 +164,7 @@ const EditModal: React.FC<EditModalProps> = ({
                         name="phone_number"
                         label={
                             <span style={{ color: "#fff" }}>
-                                Phone Number
+                                Phone Number1
                             </span>
                         }
                         rules={[{ required: true, message: 'Phone is required' }]}
