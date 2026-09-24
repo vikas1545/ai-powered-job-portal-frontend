@@ -20,3 +20,4 @@ body {
     color: #D1D5DB !important;
 }
 
+.ant-form-item .anticon { color: rgba(0, 0, 0, 0.45); }

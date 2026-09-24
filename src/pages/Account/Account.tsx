@@ -8,6 +8,8 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import type { User } from '../../components/types';
 import { useParams } from 'react-router-dom';
+import CompanySection from './CompanySection';
+
 const user_service = import.meta.env.VITE_USER_SERVICE;
 
 const Account = () => {
@@ -48,7 +50,8 @@ const Account = () => {
                 {userById.role === 'jobseeker' && <Skills user={userById} isYourAccount={false} />}
             </div>}</> : <>{user && <div style={{ width: '90%', margin: 'auto' }}>
                 <Info user={user} isYourAccount={true} />
-                {user.role === 'jobseeker' && <Skills user={user} isYourAccount={true} />}
+                {/* {user.role === 'jobseeker' && <Skills user={user} isYourAccount={true} />} */}
+                 {user.role === 'recruiter' && <CompanySection user={user} isYourAccount={true}/>}
             </div>} </>}
         </Spin>
     )

@@ -42,7 +42,6 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         try {
             setLoading(true);
             const { data } = await axios.put(`${user_service}/api/user/update/resume`, formData, { headers: { Authorization: `Bearer ${token}` } });
-
             notification.success({ message: 'resume updated' })
             fetchUser()
         } catch (error: any) {
@@ -105,8 +104,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
             const { data } = await axios.get(`${user_service}/api/user/me`, { headers: { Authorization: `Bearer ${token}` } });
             setUser(data);
             setIsAuth(true);
-        } catch (error) {
-            notification.error({ message: 'Failed to fetch user data. Please login again.' });
+        } catch (error: any) {
+            notification.error({ message: error?.response?.data?.message || 'Failed to fetch user data. Please login again.' });
         } finally {
             setLoading(false);
         }
@@ -120,7 +119,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
     return <AppContext.Provider value={{
         user, setUser, loading, setLoading, isAuth, setIsAuth, btnLoading, setBtnLoading, logOut, updateProfilePic,
-        resumeUpdate, resumeDelete, addSkills,deleteSkill
+        resumeUpdate, resumeDelete, addSkills, deleteSkill
     }}>
         {children}
     </AppContext.Provider>

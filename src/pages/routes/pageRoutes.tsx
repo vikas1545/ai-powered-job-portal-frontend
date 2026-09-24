@@ -6,6 +6,7 @@ import About from "../../components/About";
 import Login from "../Login/Login";
 import Register from "../Register/Register";
 import Account from "../Account/Account";
+import SpecificCompany from "../Account/SpecificCompany";
 
 function PageRoutes() {
     return (
@@ -18,6 +19,7 @@ function PageRoutes() {
                     <Route path='/about' element={<About />} />
                     <Route path='/account' element={<Account />} />
                     <Route path='/account/:id' element={<Account />} />
+                    <Route path='/company/:id' element={<SpecificCompany />} />
                 </Route>
             </Routes>
         </BrowserRouter>

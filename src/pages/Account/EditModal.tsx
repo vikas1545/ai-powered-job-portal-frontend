@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Form, Input, message, Modal, Upload, type UploadFile, type UploadProps } from "antd";
+import { Button, Card, Form, Input, message, Modal, Upload, type UploadProps } from "antd";
 import type { User } from "../../components/types";
 import { ArrowRightOutlined, MailOutlined, PhoneOutlined, UploadOutlined, UserOutlined } from "@ant-design/icons";
 
