@@ -4,45 +4,50 @@ import type { Company, Job, User } from "../../components/types";
 import { ArrowRightOutlined, BankOutlined, GlobalOutlined, MailOutlined, PhoneOutlined, UploadOutlined, UserOutlined } from "@ant-design/icons";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { useParams } from "react-router-dom";
 
 const job_service = import.meta.env.VITE_JOB_SERVICE;
 
 interface JobModalProps {
     isJobModalOpen: boolean;
     setIsJobModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
-    // user: User | null;
-    // fetChCompany: () => Promise<void>;
+    fetChSpecificCompany: () => Promise<void>;
+    selectedJob: Job | null
 
 }
 
 const JobModal: React.FC<JobModalProps> = ({
     isJobModalOpen,
     setIsJobModalOpen,
-
+    fetChSpecificCompany,
+    selectedJob
 }) => {
     const [form] = Form.useForm<any>();
     const [loading, setLoading] = useState(false);
     const token = Cookies.get('token');
+    const { id } = useParams()
 
-
+    useEffect(() => {
+        if (selectedJob) {
+            form.setFieldsValue(selectedJob)
+        }
+    }, [selectedJob])
 
     const onFinish = async (values: any) => {
         try {
             setLoading(true);
-            const formData = new FormData();
-            formData.append("name", values.name);
-            formData.append("description", values.description);
-            formData.append("website", values.website);
-            const logo = values.logo?.[0]?.originFileObj;
-            formData.append("file", logo, logo.name);
-            const { data } = await axios.post(`${job_service}/api/job/company/new`, formData, { headers: { Authorization: `Bearer ${token}` } });
-            notification.success({ message: data?.message || "Company details saved Successfully", placement: "top" });
-            // fetChCompany()
+            const config = { headers: { Authorization: `Bearer ${token}` } };
+            const payload = { ...values, company_id: id };
+
+            const { data } = selectedJob
+                ? await axios.put(`${job_service}/api/job/${selectedJob.job_id}`, payload, config)
+                : await axios.post(`${job_service}/api/job/new`, payload, config);
+
+            notification.success({ message: data?.message || "Job details saved Successfully", placement: "top" });
+            await fetChSpecificCompany()
             setIsJobModalOpen(false)
         } catch (error: any) {
-            console.error("Registration error:", error);
-            notification.error({ message: error?.response?.data?.message || "Failed to save company details", placement: "top" });
-
+            notification.error({ message: error?.response?.data?.message || "Failed To Save Job Details", placement: "top" });
         } finally {
             setLoading(false);
         }
@@ -72,6 +77,7 @@ const JobModal: React.FC<JobModalProps> = ({
                 <Form<Job>
                     form={form}
                     layout="vertical"
+                    onFinish={onFinish}
                 >
                     <Row gutter={16}>
                         {/* Title */}

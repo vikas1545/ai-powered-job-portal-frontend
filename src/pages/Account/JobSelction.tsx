@@ -1,29 +1,28 @@
 
+import React, { useState } from 'react'
+import type { Job } from "../../components/types";
+import { Button, Card, Flex, Tag, Typography } from "antd";
 
-import Cookies from "js-cookie";
-import axios from "axios";
-import React, { useEffect, useState } from 'react'
-import type { Company, Job } from "../../components/types";
-import { Avatar, Button, Card, Col, Flex, message, notification, Form, Row, Space, Typography, Upload, type UploadFile, type UploadProps, InputNumber, Input, Select, Switch, Tag, Popconfirm } from "antd";
-import { useParams } from "react-router-dom";
-import { DeleteOutlined, EyeOutlined, PlusOutlined, ShopTwoTone } from "@ant-design/icons";
+import {
+    CheckCircleOutlined, CloseCircleOutlined, EnvironmentOutlined, EyeOutlined, LaptopOutlined,
+    PlusOutlined, ShopTwoTone, UsergroupAddOutlined, WalletOutlined
+} from "@ant-design/icons";
 import JobModal from "./JobModal";
-const job_service = import.meta.env.VITE_JOB_SERVICE;
 
 const cardBg = "#ffffff";
 const textColor = "#1f2430";
-const subText = "#8c8c8c";
-const borderColor = "#eceef2";
-const brandBlue = "#2f6fed";
-const { Title, Paragraph, Text } = Typography;
+const subText = "#8c8c8c";;
+const { Title, Text } = Typography;
+interface JobSectionProps {
+    jobs?: Job[],
+    isYourAccount: boolean,
+    fetChSpecificCompany: () => Promise<void>
+}
 
-const JobSection = () => {
-    const [loadingData, setLoadingData] = useState(false);
+const JobSection: React.FC<JobSectionProps> = ({ jobs, isYourAccount, fetChSpecificCompany }) => {
     const [isJobModalOpen, setIsJobModalOpen] = useState(false);
-    const [company, setCompany] = useState<Company | null>(null);
-    const [jobs, setJobs] = useState<Job[]>([]);
-    ;
-    const [form] = Form.useForm<Job>();
+    const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+
 
     return (
 
@@ -35,81 +34,51 @@ const JobSection = () => {
                     margin: 'auto',
                     backgroundColor: 'rgb(29, 78, 216)'
                 }}
-                loading={loadingData}
                 styles={{ body: { background: cardBg } }}
                 title={<Tag style={{ padding: '3px 5px' }}><ShopTwoTone style={{ fontSize: 25 }} /></Tag>}
                 extra={<Flex align='center' gap={20}><Title level={5} style={{ color: 'white', marginTop: '5px' }}>
-                     {jobs.length} Active Jobs</Title>
+                    {jobs?.length} Active Jobs</Title>
                     <Button icon={<PlusOutlined />} onClick={() => setIsJobModalOpen(true)}>New Jobs</Button></Flex>}
             >
 
 
-                {jobs.length > 0 ?
-                    jobs.map(c => (<Card size="small" key={c.company_id}>
-                        {/* <Flex gap={8} align='center' wrap justify='space-between'>
-                            <div style={{ width: 60 }}><Avatar
-                                size={55}
-                                src={c.logo}
-                                icon={!c.logo ? <BankOutlined /> : undefined}
-                            />
-                            </div>
+                {jobs && jobs.length > 0 ?
+                    jobs?.map(j => (<Card size="small" key={j.job_id} style={{marginBottom:8}} >
+                        <Flex gap={12} align='center' wrap justify='space-between'>
 
-                            <Flex vertical gap={4} align='start' style={{ flexGrow: 1, maxWidth: 480 }}>
-                                <Title
-                                    level={5}
-                                    style={{
-                                        margin: 0,
-                                        color: textColor,
-                                    }}
-                                >
-                                    {c.name}
-                                </Title>
+                            <Flex vertical gap={8} align='start' justify="space-between" wrap>
+                                <Flex gap={8} justify="space-between" align="center">
+                                    <Title level={5} style={{ margin: 0, color: textColor }} >
+                                        {j.title}
+                                    </Title>
+                                    <div >{j.is_active ? <Tag color='green' icon={<CheckCircleOutlined />}>Active</Tag>
+                                        : <Tag color='red' icon={<CloseCircleOutlined />}>In Active</Tag>
+                                    }
+                                    </div>
+                                </Flex>
 
-                                <Text
-                                    style={{
-                                        color: subText,
-                                        wordBreak: "break-word",
-                                    }}
-                                >
-                                    {c.description}
+                                <Text style={{ color: subText, wordBreak: "break-word" }}>
+                                    {j.description}
                                 </Text>
 
-                                <Button
-                                    type="link"
-                                    onClick={() => window.open(c.website)}
-                                    style={{
-                                        padding: 0,
-                                        height: "auto",
-                                        whiteSpace: "normal",
-                                        textAlign: "left",
-                                        wordBreak: "break-all",
-                                    }}
-                                >
-                                    {c.website}
-                                </Button>
+                                <Flex gap={8} wrap style={{ marginTop: 5 }}>
+                                    <Tag icon={<LaptopOutlined />}>{j.role}</Tag>
+                                    <Tag icon={<WalletOutlined />}>{j.salary}</Tag>
+                                    <Tag icon={<EnvironmentOutlined />}>{j.location}</Tag>
+                                    <Tag icon={<LaptopOutlined />}>{`${j.work_location} (${j.job_type})`}</Tag>
+                                    <Tag icon={<UsergroupAddOutlined />}>{j.openings}</Tag>
+                                </Flex>
 
                             </Flex>
 
-                            <Flex gap={8} justify='end'>
-                                <Button size="large" shape="circle" onClick={() => setSelectedCompany(c)}>
-                                    <EyeOutlined />
-                                </Button>
+                            <Button size="large" shape="circle"
+                                onClick={() => { setSelectedJob(j); setIsJobModalOpen(true) }}
+                                style={{ marginLeft: 'auto' }}
+                            >
+                                <EyeOutlined />
+                            </Button>
 
-                                <Popconfirm
-                                    title='Are You sure want to delete this job'
-                                    placement='topLeft'
-                                    open={open}
-                                    onConfirm={() => handleDelete(c.company_id)}
-                                    okButtonProps={{ loading: loading }}
-                                    onCancel={() => { setOpen(false) }}
-                                >
-                                    <Button size="large" shape="circle" danger onClick={() => setOpen(true)}>
-                                        <DeleteOutlined />
-                                    </Button>
-                                </Popconfirm>
-
-                            </Flex>
-                        </Flex> */}
+                        </Flex>
                     </Card>))
                     : <Flex justify='center' vertical align='center'>
                         <Tag style={{ padding: '10px', borderRadius: 20 }}><ShopTwoTone style={{ fontSize: 25 }} /></Tag>
@@ -119,7 +88,8 @@ const JobSection = () => {
 
             </Card>
 
-            {isJobModalOpen && <JobModal isJobModalOpen={true} setIsJobModalOpen={setIsJobModalOpen}
+            {isJobModalOpen && <JobModal isJobModalOpen={true} setIsJobModalOpen={setIsJobModalOpen} 
+            selectedJob={selectedJob} fetChSpecificCompany={fetChSpecificCompany}
             />}
         </div>
     )

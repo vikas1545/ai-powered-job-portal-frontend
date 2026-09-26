@@ -26,7 +26,7 @@ const SpecificCompany = () => {
 
     const token = Cookies.get('token');
 
-    const fetChCompany = async () => {
+    const fetChSpecificCompany = async () => {
         try {
             setLoadingData(true)
             const { data } = await axios.get(`${job_service}/api/job/company/${id}`, { headers: { Authorization: `Bearer ${token}` } });
@@ -50,12 +50,12 @@ const SpecificCompany = () => {
 
     useEffect(() => {
         if (id)
-            fetChCompany()
+            fetChSpecificCompany()
     }, [id])
 
     const imageUrl = fileList[0]?.originFileObj ? URL.createObjectURL(fileList[0].originFileObj) : undefined;
 
-    console.log('imageUrl :', imageUrl);
+    console.log('company :', company);
 
     const isYourAccount = true;
 
@@ -134,7 +134,7 @@ const SpecificCompany = () => {
             </Card>
         </div>
 
-        <JobSection/>
+        <JobSection jobs={company?.jobs} isYourAccount={isYourAccount} fetChSpecificCompany={fetChSpecificCompany}/>
         </>
     );
 

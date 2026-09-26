@@ -119,7 +119,7 @@ export interface Company {
     logo_public_id: string,
     recruiter_id: string,
     created_at: string,
-    job?: Job[]
+    jobs?: Job[]
 }
 
 
