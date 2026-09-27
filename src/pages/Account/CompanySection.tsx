@@ -1,4 +1,4 @@
-import { Avatar, Button, Card, Col, Divider, Flex, notification, Popconfirm, Row, Space, Tag, Typography } from 'antd'
+import { Avatar, Button, Card, Flex, notification, Popconfirm, Tag, Typography } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { useAppData } from '../../context/AppContext';
 import { BankOutlined, DeleteOutlined, EyeOutlined, PlusOutlined, ShopTwoTone } from '@ant-design/icons';
@@ -7,6 +7,7 @@ import type { AccountProps, Company } from '../../components/types';
 
 import Cookies from "js-cookie";
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 
 const cardBg = "#ffffff";
@@ -24,7 +25,8 @@ const CompanySection: React.FC<AccountProps> = ({ user, isYourAccount }) => {
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
 
   const token = Cookies.get('token');
-
+  const navigate = useNavigate()
+  
   const fetChCompany = async () => {
     try {
       setLoadingData(true)
@@ -56,18 +58,7 @@ const CompanySection: React.FC<AccountProps> = ({ user, isYourAccount }) => {
     }
   }
 
-  const updateCompany = async (company: Company) => {
-        try {
-            setLoadingData(true);
-            // const { data } = await axios.put(`${user_service}/api/user/update/resume`, body:{data:company}, { headers: { Authorization: `Bearer ${token}` } });
-            // notification.success({ message: 'resume updated' })
-            // fetChCompany()
-        } catch (error: any) {
-            notification.error({ message: error?.response?.data?.message || 'Failed to update company' });
-        } finally {
-            setLoadingData(false);
-        }
-    }
+  
 
 
   return (
@@ -136,8 +127,8 @@ const CompanySection: React.FC<AccountProps> = ({ user, isYourAccount }) => {
               </Flex>
 
               <Flex gap={8} justify='end'>
-                <Button size="large" shape="circle" onClick={() => setSelectedCompany(c)}>
-                  <EyeOutlined />
+                <Button size="large" shape="circle" onClick={() => navigate(`/company/${c.company_id}`)}>
+                  <EyeOutlined  />
                 </Button>
 
                 <Popconfirm

@@ -48,9 +48,6 @@ export default function Login() {
   }
 
 
-  // if (userLoading) {
-  //   return <Loading />
-  // }
 
   return (<Layout> <Content>
     <Flex
@@ -160,7 +157,7 @@ export default function Login() {
           >
             <Input prefix={<LockOutlined />} type="password" placeholder="Password" size='large' />
           </Form.Item>
-
+          <Link to='/forgot'>Forgot Password ?</Link>
           <Form.Item style={{ marginBottom: 0 }}>
             <Button
               htmlType="submit"
@@ -169,7 +166,7 @@ export default function Login() {
               size="large"
               loading={loading}
               style={{ marginTop: 8 }}
-              icon={!loading ? <ArrowRightOutlined /> : null}
+              icon={!loading ? <ArrowRightOutlined style={{ color: 'white' }} /> : null}
             >
               {loading
                 ? "Signing In..."
@@ -178,10 +175,10 @@ export default function Login() {
           </Form.Item>
         </Form>
 
-        <Flex justify='center' align='center' gap={4} style={{ padding: 8 ,fontSize:16}} wrap>
+        <Flex justify='center' align='center' gap={4} style={{ padding: 8, fontSize: 16 }} wrap>
           <Text style={{ color: 'white' }}>Don't have an account ? </Text>
           <Link to='/register'>Create an account</Link>
-          </Flex>
+        </Flex>
       </Card>
     </Flex>
   </Content>
