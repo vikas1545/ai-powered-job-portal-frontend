@@ -24,6 +24,11 @@ export default function Login() {
   const { isAuth, setIsAuth, setUser } = useAppData();
   const navigate = useNavigate();
 
+  if (isAuth) {
+    navigate('/')
+  }
+
+
   const onFinish = async (values: any) => {
 
     try {

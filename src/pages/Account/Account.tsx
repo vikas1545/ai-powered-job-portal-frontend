@@ -7,7 +7,7 @@ import Skills from './Skills';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import type { User } from '../../components/types';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import CompanySection from './CompanySection';
 
 const user_service = import.meta.env.VITE_USER_SERVICE;
@@ -17,6 +17,15 @@ const Account = () => {
     const { id } = useParams()
     const [loadingUserById, setLoadingUserById] = useState(false);
     const [userById, setUserById] = useState<User | null>(null);
+    const navigate = useNavigate();
+
+
+
+    useEffect(() => {
+        if (!isAuth && !loading) {
+            navigate('/login')
+        }
+    }, [isAuth,loading])
 
     const token = Cookies.get('token');
 
@@ -34,12 +43,12 @@ const Account = () => {
 
 
     useEffect(() => {
-        if (id)
+        if (id && isAuth)
             fetchUserById();
-    }, [id]);
+    }, [id,isAuth]);
 
     return (
-        <Spin spinning={loading}>
+        <Spin spinning={loading || loadingUserById}>
             {/* {user && <div style={{ width: '90%', margin: 'auto' }}>
                 <Info user={user} isYourAccount={true} />
                 {user.role === 'jobseeker' && <Skills user={user} isYourAccount={true} />}
@@ -51,7 +60,7 @@ const Account = () => {
             </div>}</> : <>{user && <div style={{ width: '90%', margin: 'auto' }}>
                 <Info user={user} isYourAccount={true} />
                 {/* {user.role === 'jobseeker' && <Skills user={user} isYourAccount={true} />} */}
-                 {user.role === 'recruiter' && <CompanySection user={user} isYourAccount={true}/>}
+                {user.role === 'recruiter' && <CompanySection user={user} isYourAccount={true} />}
             </div>} </>}
         </Spin>
     )

@@ -4,12 +4,14 @@ import { Content } from "antd/es/layout/layout";
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { useAppData } from "../../context/AppContext";
 const auth_service = import.meta.env.VITE_AUTH_SERVICE;
 
 function ResetPassword() {
 
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
+    const { setIsAuth } = useAppData();
     const navigate = useNavigate();
     const { token } = useParams()
 
@@ -18,6 +20,7 @@ function ResetPassword() {
             setLoading(true);
             const { data } = await axios.post(`${auth_service}/api/auth/reset/${token}`, values);
             notification.success({ message: data?.message || 'Password reset successfully', placement: 'top' })
+            setIsAuth(false)
             navigate('/login');
         } catch (error: any) {
             notification.error({ message: error?.response?.data?.message || 'Failed to reset password' })
