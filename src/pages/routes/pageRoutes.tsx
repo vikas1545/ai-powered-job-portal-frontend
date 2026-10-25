@@ -9,6 +9,7 @@ import Account from "../Account/Account";
 import SpecificCompany from "../Account/SpecificCompany";
 import ForgotPassword from "../Login/ForgotPassword";
 import ResetPassword from "../Login/ResetPassword";
+import JobPage from "../Job/JobPage";
 
 function PageRoutes() {
     return (
@@ -24,6 +25,8 @@ function PageRoutes() {
                     <Route path='/account' element={<Account />} />
                     <Route path='/account/:id' element={<Account />} />
                     <Route path='/company/:id' element={<SpecificCompany />} />
+
+                    <Route path='/job' element={<JobPage />} />
                 </Route>
             </Routes>
         </BrowserRouter>

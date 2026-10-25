@@ -93,6 +93,11 @@ export interface AccountProps {
     user: User | null,
     isYourAccount: Boolean
 }
+export interface JobCardProps {
+    applications: Application[] | null,
+    j:Job,
+    applyJob:(job_id: number)=>void,
+}
 
 export interface Job {
     job_id: number,
@@ -105,6 +110,8 @@ export interface Job {
     role: string,
     work_location: "On-site" | "Remote" | "Hybrid",
     company_id: number,
+    company_name: string,
+    company_logo: string,
     posted_by_recruiter_id: number,
     created_at: string,
     is_active: boolean,

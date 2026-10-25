@@ -15,7 +15,7 @@ const MainLayout = () => {
     } = theme.useToken();
     const navigate = useNavigate();
 
-    const { isAuth, user, logOut,loading } = useAppData()
+    const { isAuth, user, logOut, loading } = useAppData()
 
     const currentYear = new Date().getFullYear();
 
@@ -28,6 +28,7 @@ const MainLayout = () => {
         {
             key: 'Jobs',
             label: 'Jobs',
+            onClick: () => navigate("/job"),
         },
         {
             key: "About",

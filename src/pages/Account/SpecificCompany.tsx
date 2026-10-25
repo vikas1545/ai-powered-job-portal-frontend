@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import React, { useEffect, useState } from 'react'
 import type { Company, Job } from "../../components/types";
-import { Avatar, Button, Card, Col, Flex, message, notification, Form, Row, Space, Typography, Upload, type UploadFile, type UploadProps, InputNumber, Input, Select, Switch } from "antd";
+import { Avatar, Card, Flex, notification, Form, Space, Typography, type UploadFile, } from "antd";
 import { useParams } from "react-router-dom";
 import { FileTextOutlined, IdcardOutlined } from "@ant-design/icons";
 import JobSection from "./JobSelction";
@@ -55,13 +55,13 @@ const SpecificCompany = () => {
 
     const imageUrl = fileList[0]?.originFileObj ? URL.createObjectURL(fileList[0].originFileObj) : undefined;
 
-    console.log('company :', company);
+
 
     const isYourAccount = true;
 
-  
+
     return (
-      <>  <div style={{ display: "flex", justifyContent: "center", padding: "40px 16px" }}>
+        <>  <div style={{ display: "flex", justifyContent: "center", padding: "40px 16px" }}>
             <Card
                 style={{
                     width: "100%",
@@ -97,7 +97,7 @@ const SpecificCompany = () => {
                         >
                             {(!imageUrl || company?.logo) && company?.name?.[0]}
                         </Avatar>
-                       
+
                     </div>
 
 
@@ -134,7 +134,7 @@ const SpecificCompany = () => {
             </Card>
         </div>
 
-        <JobSection jobs={company?.jobs} isYourAccount={isYourAccount} fetChSpecificCompany={fetChSpecificCompany}/>
+            <JobSection jobs={company?.jobs} isYourAccount={isYourAccount} fetChSpecificCompany={fetChSpecificCompany} />
         </>
     );
 
