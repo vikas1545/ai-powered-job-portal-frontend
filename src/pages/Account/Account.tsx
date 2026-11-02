@@ -17,6 +17,7 @@ const Account = () => {
     const { id } = useParams()
     const [loadingUserById, setLoadingUserById] = useState(false);
     const [userById, setUserById] = useState<User | null>(null);
+    const [isYourAccount, setIsYourAccount] = useState(false);
     const navigate = useNavigate();
 
 
@@ -25,7 +26,7 @@ const Account = () => {
         if (!isAuth && !loading) {
             navigate('/login')
         }
-    }, [isAuth,loading])
+    }, [isAuth, loading])
 
     const token = Cookies.get('token');
 
@@ -34,6 +35,9 @@ const Account = () => {
             setLoadingUserById(true);
             const { data } = await axios.get(`${user_service}/api/user/${id}`, { headers: { Authorization: `Bearer ${token}` } });
             setUserById(data);
+            if (data?.user_id === user?.user_id) {
+                setIsYourAccount(true)
+            }
         } catch (error) {
             notification.error({ message: 'Failed to fetch user data. Please login again.' });
         } finally {
@@ -45,23 +49,30 @@ const Account = () => {
     useEffect(() => {
         if (id && isAuth)
             fetchUserById();
-    }, [id,isAuth]);
+    }, [id, isAuth]);
+
 
     return (
         <Spin spinning={loading || loadingUserById}>
-            {/* {user && <div style={{ width: '90%', margin: 'auto' }}>
-                <Info user={user} isYourAccount={true} />
-                {user.role === 'jobseeker' && <Skills user={user} isYourAccount={true} />}
-            </div>} */}
-
-            {id ? <>{userById && <div style={{ width: '90%', margin: 'auto' }}>
-                <Info user={userById} isYourAccount={false} />
-                {userById.role === 'jobseeker' && <Skills user={userById} isYourAccount={false} />}
+            {/* {id ? <>{userById && <div style={{ width: '90%', margin: 'auto' }}>
+                <Info user={user} isYourAccount={userById?.user_id===user?.user_id} />
+                {userById.role === 'jobseeker' && <Skills user={userById} isYourAccount={userById?.user_id===user?.user_id} />}
             </div>}</> : <>{user && <div style={{ width: '90%', margin: 'auto' }}>
+                <Info user={user} isYourAccount={userById?.user_id===user?.user_id} />
+                {user.role === 'recruiter' && <CompanySection user={user} isYourAccount={userById?.user_id===user?.user_id} />}
+            </div>} </>} */}
+
+            {isYourAccount ? <div style={{ width: '90%', margin: 'auto' }}>
                 <Info user={user} isYourAccount={true} />
-                {/* {user.role === 'jobseeker' && <Skills user={user} isYourAccount={true} />} */}
-                {user.role === 'recruiter' && <CompanySection user={user} isYourAccount={true} />}
-            </div>} </>}
+                {user?.role === 'jobseeker' && <Skills user={user} isYourAccount={true} />}
+                {user?.role === 'recruiter' && <CompanySection user={user} isYourAccount={true} />}
+            </div>
+
+                : <div style={{ width: '90%', margin: 'auto' }}>
+                    <Info user={userById} isYourAccount={false} />
+                    {userById?.role === 'jobseeker' && <Skills user={userById} isYourAccount={false} />}
+                    {/* {userById?.role === 'recruiter' && <CompanySection user={userById} isYourAccount={false} />} */}
+                </div>}
         </Spin>
     )
 }

@@ -46,7 +46,7 @@ const Skills: React.FC<AccountProps> = ({ user, isYourAccount }) => {
                 </Paragraph>
 
                 <Space.Compact style={{ width: '100%' }}>
-                    <Input style={{ width: '100%' }} placeholder='E.g. React, Puthon, Java...' value={currentSkill}
+                    <Input style={{ width: '100%' }} placeholder='E.g. React, Python, Java...' value={currentSkill}
                         onChange={(val) => setCurrentSkill(val.target.value)} allowClear size='large' onKeyDown={(e) => {
                             if (e.code === 'Enter') {
                                 addSkillSet()

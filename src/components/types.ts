@@ -95,8 +95,13 @@ export interface AccountProps {
 }
 export interface JobCardProps {
     applications: Application[] | null,
-    j:Job,
-    applyJob:(job_id: number)=>void,
+    job: Job,
+    applyJob: (job_id: number) => void,
+}
+
+export interface JobApplicationProps {
+    job_id: number,
+    user: User | null
 }
 
 export interface Job {

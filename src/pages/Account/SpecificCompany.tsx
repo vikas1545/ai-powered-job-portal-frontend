@@ -1,12 +1,13 @@
 
 import Cookies from "js-cookie";
 import axios from "axios";
-import React, { useEffect, useState } from 'react'
-import type { Company, Job } from "../../components/types";
-import { Avatar, Card, Flex, notification, Form, Space, Typography, type UploadFile, } from "antd";
+import { useEffect, useState } from 'react'
+import type { Company } from "../../components/types";
+import { Avatar, Card, Flex, notification, Space, Typography, type UploadFile, Spin, } from "antd";
 import { useParams } from "react-router-dom";
 import { FileTextOutlined, IdcardOutlined } from "@ant-design/icons";
 import JobSection from "./JobSelction";
+import { useAppData } from "../../context/AppContext";
 const job_service = import.meta.env.VITE_JOB_SERVICE;
 
 const cardBg = "#ffffff";
@@ -18,18 +19,23 @@ const { Title, Paragraph, Text } = Typography;
 
 const SpecificCompany = () => {
     const [loadingData, setLoadingData] = useState(false);
+    const [isYourAccount, setIsYourAccount] = useState(false);
     const [company, setCompany] = useState<Company | null>(null);
     const [fileList, setFileList] = useState<UploadFile[]>([]);
-    const [form] = Form.useForm<Job>();
 
     const { id } = useParams()
-
     const token = Cookies.get('token');
+    const { isAuth, user, loading } = useAppData();
 
     const fetChSpecificCompany = async () => {
         try {
             setLoadingData(true)
             const { data } = await axios.get(`${job_service}/api/job/company/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+
+            if (data?.recruiter_id === user?.user_id && user?.role === 'recruiter') {
+                setIsYourAccount(true)
+            }
+
             setCompany(data)
             setFileList([
                 {
@@ -51,22 +57,18 @@ const SpecificCompany = () => {
     useEffect(() => {
         if (id)
             fetChSpecificCompany()
-    }, [id])
+    }, [id,user])
 
     const imageUrl = fileList[0]?.originFileObj ? URL.createObjectURL(fileList[0].originFileObj) : undefined;
 
 
 
-    const isYourAccount = true;
-
-
     return (
-        <>  <div style={{ display: "flex", justifyContent: "center", padding: "40px 16px" }}>
+        <Spin spinning={loadingData ||loading}>  <div style={{ display: "flex", justifyContent: "center", padding: "40px 16px" }}>
             <Card
                 style={{
                     width: "100%",
                     maxWidth: 720,
-                    // borderRadius: 16,
                     overflow: "hidden",
                     borderColor,
                 }}
@@ -135,7 +137,7 @@ const SpecificCompany = () => {
         </div>
 
             <JobSection jobs={company?.jobs} isYourAccount={isYourAccount} fetChSpecificCompany={fetChSpecificCompany} />
-        </>
+        </Spin>
     );
 
 }

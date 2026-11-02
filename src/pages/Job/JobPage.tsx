@@ -1,22 +1,21 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect,useState } from 'react'
 import type { Application, Job } from '../../components/types';
 import Cookies from "js-cookie";
 import axios from 'axios';
-import { Avatar, Button, Card, Col, Flex, notification, Row, Space, Spin, Tag, Typography } from 'antd';
-import { ArrowRightOutlined, BankOutlined, CheckCircleOutlined, EnvironmentOutlined, SolutionOutlined, WalletOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
-import { useAppData } from '../../context/AppContext';
+import { Avatar, Button, Card, Col, Drawer, Flex, Input, notification, Row, Select, Space, Spin, Tag, Typography } from 'antd';
+import { EnvironmentOutlined, FilterOutlined, SearchOutlined, SolutionOutlined, } from '@ant-design/icons';
+
 import JobCard from './JobCard';
 const VITE_JOB_SERVICE = import.meta.env.VITE_JOB_SERVICE;
 const user_service = import.meta.env.VITE_USER_SERVICE;
-const { Title, Text } = Typography;
+const { Title, } = Typography;
+const { Search } = Input;
 
-const cardBg = "#ffffff";
 const textColor = "#1f2430";
 const subText = "#8c8c8c";
 
 
-const location: string[] = ['Delhi', 'Mumbai', 'Banglore', 'Hyderabad', 'Pune', 'Kolkata', 'Chennai', 'Remote'];
+const locationArr: string[] = ['Delhi', 'Mumbai', 'Banglore', 'Hyderabad', 'Pune', 'Kolkata', 'Chennai', 'Remote'];
 
 function JobPage() {
 
@@ -25,8 +24,18 @@ function JobPage() {
     const [applications, setApplications] = useState<Application[] | null>(null);
     const [title, setTitle] = useState('');
     const [location, setLocation] = useState('');
-
+    const [searchInput, setSearchInput] = useState('');
     const token = Cookies.get('token');
+    const [open, setOpen] = useState(false);
+
+    const showDrawer = () => {
+        setOpen(true);
+    };
+
+    const onClose = () => {
+        setOpen(false);
+    };
+
 
     const fetchApplications = async () => {
         try {
@@ -55,9 +64,20 @@ function JobPage() {
     }
 
     useEffect(() => {
-        fetchJobs()
         fetchApplications()
     }, [])
+
+    useEffect(() => {
+        fetchJobs()
+    }, [title, location])
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setTitle(searchInput);
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [searchInput]);
 
 
     const applyJob = async (job_id: number) => {
@@ -88,10 +108,33 @@ function JobPage() {
                                     <span className="mission-highlight">Opportunities</span>
                                 </Title>
 
-                                <div><Title level={4} style={{ color: subText, marginTop: -10, marginBottom: 20 }}>{jobs.length} Jobs </Title></div>
+                                <div>
+                                    <Title level={4} style={{ color: subText, marginTop: -10, marginBottom: 20 }}>{jobs.length} Jobs </Title>
+                                </div>
+                             
                             </Flex>
 
-                            <Button>Filter</Button>
+                           <Flex vertical gap={8} align='flex-end'>
+                             <Button onClick={showDrawer} type='dashed' size='large' icon={<FilterOutlined />} style={{width:100}}>Filter</Button>
+                               <Flex wrap justify='flex-end' gap={8} align='flex-end'>
+                                    {location && <Tag closable icon={<EnvironmentOutlined />} color={textColor} style={{ padding: 8,margin:0 }}
+                                        onClose={(e: React.MouseEvent<HTMLElement>) => {
+                                            e.preventDefault();
+                                            setLocation('')
+                                        }}
+
+                                    >{location}</Tag>}
+                                    {title && <Tag
+                                        closable icon={<SolutionOutlined />}
+                                        style={{ padding: 8,margin:0 }}
+                                        color={textColor}
+                                        onClose={(e: React.MouseEvent<HTMLElement>) => {
+                                            e.preventDefault();
+                                            setSearchInput('')
+                                            setTitle('');
+                                        }}
+                                    >{title}</Tag>}
+                                </Flex> </Flex>
                         </Flex>
                     </div>
                 </section>
@@ -100,7 +143,7 @@ function JobPage() {
                     {
                         jobs.length > 0 ? <Row gutter={[16, 16]}>
                             {jobs.map(j => <Col xs={24} sm={12} md={8} xl={6} key={j.job_id}>
-                                <JobCard j={j} applyJob={applyJob} applications={applications} />
+                                <JobCard job={j} applyJob={applyJob} applications={applications} />
                             </Col>)}
                         </Row>
                             :
@@ -113,6 +156,41 @@ function JobPage() {
 
                 </section>
             </div>
+
+
+
+            <Drawer
+                title="Job Filter"
+                closable={{ 'aria-label': 'Close Button' }}
+                onClose={onClose}
+                open={open}
+            >
+                <Flex vertical gap={12}>
+                    <Search
+                        size="large"
+                        placeholder="Job title, keywords, or company"
+                        prefix={<SearchOutlined style={{ color: "#999" }} />}
+                        onChange={(e) => setSearchInput(e.target.value)}
+                        value={searchInput}
+                        allowClear
+                        onClear={()=>setSearchInput('')}
+                    />
+
+                    <Select
+                        showSearch
+                        allowClear
+                        size="large"
+                        prefix={<EnvironmentOutlined style={{ color: "#999" }} />}
+                        placeholder="City or location"
+                        onSelect={(v) => setLocation(v)}
+                        style={{ width: '100%' }}
+                        value={location?location:undefined}
+                        onClear={()=>setLocation('')}
+                    >
+                        {locationArr.map(l => <Select.Option key={l} value={l}>{l}</Select.Option>)}
+                    </Select>
+                </Flex>
+            </Drawer>
         </Spin>
     )
 

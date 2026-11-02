@@ -1,13 +1,11 @@
 
-
-import React from "react";
 import { Typography, Tag, Button, Input, Row, Col, Card, Statistic, Space } from "antd";
 import { RiseOutlined, SearchOutlined, EnvironmentOutlined, ArrowRightOutlined, ExpandOutlined, CheckOutlined } from "@ant-design/icons";
 
 const { Title, Paragraph, Text } = Typography;
 const { Search } = Input;
 
-// Reusable pieces -----------------------------------------------------------
+
 
 function HeroBadge() {
     return (

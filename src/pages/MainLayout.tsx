@@ -43,7 +43,7 @@ const MainLayout = () => {
                 <Typography.Paragraph>{user?.email}</Typography.Paragraph>
             </Flex>
             <Divider size='small' style={{ marginTop: -10 }} />
-            <Button block icon={<UserOutlined />} onClick={() => navigate('/account')}>My Profile</Button>
+            <Button block icon={<UserOutlined />} onClick={() => navigate(`/account/${user?.user_id}`)}>My Profile</Button>
             <Button danger block icon={<LogoutOutlined />} onClick={logOut}>Logout</Button>
         </Flex>
     );

@@ -38,7 +38,9 @@ const JobSection: React.FC<JobSectionProps> = ({ jobs, isYourAccount, fetChSpeci
                 title={<Tag style={{ padding: '3px 5px' }}><ShopTwoTone style={{ fontSize: 25 }} /></Tag>}
                 extra={<Flex align='center' gap={20}><Title level={5} style={{ color: 'white', marginTop: '5px' }}>
                     {jobs?.length} Active Jobs</Title>
-                    <Button icon={<PlusOutlined />} onClick={() => setIsJobModalOpen(true)}>New Jobs</Button></Flex>}
+                    {isYourAccount && <Button icon={<PlusOutlined />} onClick={() => setIsJobModalOpen(true)}>New Jobs</Button>}
+                    
+                    </Flex>}
             >
 
 
@@ -71,19 +73,19 @@ const JobSection: React.FC<JobSectionProps> = ({ jobs, isYourAccount, fetChSpeci
 
                             </Flex>
 
-                            <Button size="large" shape="circle"
+                          {isYourAccount &&  <Button size="large" shape="circle"
                                 onClick={() => { setSelectedJob(j); setIsJobModalOpen(true) }}
                                 style={{ marginLeft: 'auto' }}
                             >
                                 <EyeOutlined />
-                            </Button>
+                            </Button>}
 
                         </Flex>
                     </Card>))
                     : <Flex justify='center' vertical align='center'>
                         <Tag style={{ padding: '10px', borderRadius: 20 }}><ShopTwoTone style={{ fontSize: 25 }} /></Tag>
                         <Title level={5} style={{ color: subText, marginTop: '15px' }}>No Job posteded Yet !</Title>
-                        <Title level={5} style={{ color: subText }}>Post Your First Job To Start Hiring Best Candidates !</Title>
+                        {isYourAccount && <Title level={5} style={{ color: subText }}>Post Your First Job To Start Hiring Best Candidates !</Title>}
                     </Flex>}
 
             </Card>
