@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="150" height="50" viewBox="0 0 150 50">
+  <!-- Mark: stylized "H" with speed lines + F, echoing the HireFast icon -->
+  <g>
+    <!-- speed lines -->
+    <rect x="2" y="14" width="10" height="2.5" rx="1.25" fill="#1677ff"/>
+    <rect x="2" y="19" width="14" height="2.5" rx="1.25" fill="#1677ff"/>
+    <rect x="2" y="24" width="10" height="2.5" rx="1.25" fill="#1677ff"/>
+
+    <!-- H (left leg) -->
+    <path d="M14 8 L21 8 L21 42 L14 42 Z" fill="#1677ff"/>
+    <!-- H (right leg) -->
+    <path d="M27 8 L34 8 L34 42 L27 42 Z" fill="#1677ff"/>
+    <!-- H crossbar -->
+    <rect x="14" y="22" width="20" height="4.5" fill="#1677ff"/>
+
+    <!-- F -->
+    <path d="M34 8 L50 8 L50 12.5 L40.5 12.5 L40.5 22 L48 22 L48 26.5 L40.5 26.5 L40.5 42 L34 42 Z" fill="#E8491D"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="58" y="33" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="22" fill="#1677ff">Hire<tspan fill="#E8491D">Fast</tspan></text>
+</svg>
