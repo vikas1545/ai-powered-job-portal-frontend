@@ -2,7 +2,7 @@ import { Spin } from "antd"
 
 function Loading() {
     return (
-        <Spin spinning={true} fullscreen />
+        <Spin spinning={true} fullscreen/>
 
     )
 }

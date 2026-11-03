@@ -58,14 +58,6 @@ function CareerGuid() {
         }
     }
 
-    const resetDialog = () => {
-        setSkills([]);
-        setCurrentSkill('');
-        setResponse(null)
-        setOpen(false)
-    }
-
-
 
     return (
         <>
